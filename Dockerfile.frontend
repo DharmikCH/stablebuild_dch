@@ -1,0 +1,12 @@
+FROM node:18-alpine
+WORKDIR /app
+COPY frontend/package.json frontend/package-lock.json ./
+RUN npm ci --legacy-peer-deps
+COPY frontend/ ./
+RUN npm run build
+FROM node:18-alpine
+WORKDIR /app
+COPY --from=0 /app .
+EXPOSE 3000
+ENV NODE_ENV=production
+CMD ["npm", "start"]

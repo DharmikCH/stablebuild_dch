@@ -1,0 +1,22 @@
+# Node
+node_modules/
+.next/
+dist/
+pnpm-lock.yaml
+package-lock.json
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+env/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Git
+.git/
