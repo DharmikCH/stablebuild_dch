@@ -24,7 +24,7 @@ export function AuthPage() {
         setError("Please fill in all fields")
         return
       }
-      
+
       // Check if email already exists
       if (users.some(user => user.email === email)) {
         setError("Email already registered. Please sign in instead.")
@@ -39,7 +39,7 @@ export function AuthPage() {
         userName: name.charAt(0).toUpperCase() + name.slice(1)
       }
       setUsers([...users, newUser])
-      
+
       setUserName(newUser.userName)
       setIsLoggedIn(true)
       setCurrentPage("profile-select")
@@ -51,7 +51,7 @@ export function AuthPage() {
       }
 
       const user = users.find(u => u.email === email && u.password === password)
-      
+
       if (user) {
         setUserName(user.userName)
         setIsLoggedIn(true)
@@ -63,9 +63,9 @@ export function AuthPage() {
   }
 
   return (
-    <main className="flex min-h-screen items-center justify-center px-4 py-20">
-      <div className="w-full max-w-md">
-        <div className="rounded-2xl border border-border bg-card p-8 shadow-sm">
+    <main className="flex min-h-screen items-center justify-center px-4 pt-32 pb-20">
+      <div className="w-full max-w-md animate-scale-in">
+        <div className="rounded-2xl border border-border bg-card p-8 shadow-sm transition-shadow duration-300 hover:shadow-md">
           <div className="mb-8 text-center">
             <h1 className="font-serif text-3xl font-bold text-foreground">
               {isSignUp ? "Create Account" : "Welcome back"}
@@ -97,7 +97,7 @@ export function AuthPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="rounded-lg border-border bg-background px-4 py-3"
+                className="rounded-lg border-border bg-background px-4 py-3 transition-all duration-200 focus:ring-2 focus:ring-primary/20 focus:border-primary/40"
               />
             </div>
 
@@ -112,14 +112,14 @@ export function AuthPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                className="rounded-lg border-border bg-background px-4 py-3"
+                className="rounded-lg border-border bg-background px-4 py-3 transition-all duration-200 focus:ring-2 focus:ring-primary/20 focus:border-primary/40"
               />
             </div>
 
             <Button
               type="submit"
               size="lg"
-              className="mt-2 w-full rounded-full bg-foreground py-6 text-base font-medium text-background hover:bg-foreground/90"
+              className="mt-2 w-full rounded-full bg-foreground py-6 text-base font-medium text-background transition-all duration-300 hover:scale-[1.02] hover:bg-foreground/90 hover:shadow-lg active:scale-[0.98]"
             >
               Continue
             </Button>
@@ -129,7 +129,7 @@ export function AuthPage() {
             {isSignUp ? "Already have an account?" : "Don't have an account?"}{" "}
             <button
               onClick={() => setIsSignUp(!isSignUp)}
-              className="font-medium text-foreground underline underline-offset-4 hover:text-foreground/80"
+              className="font-medium text-foreground underline underline-offset-4 transition-colors duration-200 hover:text-primary"
             >
               {isSignUp ? "Sign in" : "Sign up"}
             </button>

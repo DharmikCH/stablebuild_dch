@@ -60,7 +60,7 @@ export function DashboardPage() {
     <main className="min-h-screen px-4 pb-20 pt-28">
       <div className="mx-auto max-w-3xl">
         {/* Top Bar */}
-        <div className="mb-10 flex items-center justify-between">
+        <div className="mb-10 flex items-center justify-between animate-fade-in">
           <div>
             <h1 className="font-serif text-2xl font-bold text-foreground md:text-3xl">
               Welcome back, {userName}
@@ -72,7 +72,7 @@ export function DashboardPage() {
         </div>
 
         {/* Main Score Display */}
-        <div className="mb-8 rounded-2xl border border-border bg-card p-10 text-center shadow-sm">
+        <div className="mb-8 rounded-2xl border border-border bg-card p-10 text-center shadow-sm animate-scale-in">
           {isLoading ? (
             <ScoreSkeleton />
           ) : (
@@ -81,7 +81,7 @@ export function DashboardPage() {
                 Your Alternative Credit Score
               </p>
               <div className="mt-6 flex items-center justify-center">
-                <div className="flex h-40 w-40 items-center justify-center rounded-full border-4 border-primary/20 bg-primary/5">
+                <div className="flex h-40 w-40 items-center justify-center rounded-full border-4 border-primary/20 bg-primary/5 animate-shimmer-glow transition-transform duration-500 hover:scale-105">
                   <span className="font-serif text-6xl font-bold text-foreground">
                     {creditScore ?? "---"}
                   </span>
@@ -89,7 +89,7 @@ export function DashboardPage() {
               </div>
               {riskBand && (
                 <div className="mt-6">
-                  <Badge className={`rounded-full px-4 py-1 text-sm font-medium ${bandColor}`}>
+                  <Badge className={`rounded-full px-4 py-1 text-sm font-medium transition-transform duration-200 hover:scale-105 ${bandColor}`}>
                     {riskBand} Risk
                   </Badge>
                 </div>
@@ -100,12 +100,12 @@ export function DashboardPage() {
 
         {/* Stat Cards */}
         <div className="mb-8 grid gap-4 sm:grid-cols-3">
-          {stats.map((stat) => (
+          {stats.map((stat, index) => (
             <div
               key={stat.label}
-              className="rounded-2xl border border-border bg-card p-6 shadow-sm"
+              className={`animate-slide-up rounded-2xl border border-border bg-card p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md stagger-${index + 1}`}
             >
-              <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
+              <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 transition-all duration-300 group-hover:scale-110">
                 <stat.icon className="h-5 w-5 text-primary" />
               </div>
               <p className="text-sm text-muted-foreground">{stat.label}</p>
@@ -130,16 +130,15 @@ export function DashboardPage() {
               {topFactors.map((factor, i) => (
                 <div
                   key={i}
-                  className="flex items-center justify-between rounded-xl bg-secondary/50 px-4 py-3"
+                  className="flex items-center justify-between rounded-xl bg-secondary/50 px-4 py-3 transition-all duration-200 hover:bg-secondary/80 hover:translate-x-1"
                 >
                   <span className="text-sm text-foreground">{factor.label}</span>
                   <div className="flex items-center gap-2">
                     <span
-                      className={`text-xs font-medium ${
-                        factor.direction === "positive"
+                      className={`text-xs font-medium ${factor.direction === "positive"
                           ? "text-emerald-600"
                           : "text-red-500"
-                      }`}
+                        }`}
                     >
                       {factor.direction === "positive" ? "▲ Helps" : "▼ Hurts"}
                     </span>
@@ -154,7 +153,7 @@ export function DashboardPage() {
         <div className="mb-8">
           <Button
             variant="outline"
-            className="w-full rounded-xl"
+            className="w-full rounded-xl transition-all duration-200 hover:scale-[1.01] hover:shadow-sm active:scale-[0.99]"
             onClick={() => setCurrentPage("settings")}
           >
             <Settings className="mr-2 h-4 w-4" />
@@ -189,7 +188,7 @@ export function DashboardPage() {
                 return (
                   <div
                     key={index}
-                    className="flex items-center justify-between rounded-xl bg-secondary/50 px-5 py-3"
+                    className="flex items-center justify-between rounded-xl bg-secondary/50 px-5 py-3 transition-all duration-200 hover:bg-secondary/80"
                   >
                     <span className="text-sm text-muted-foreground">{entry.date}</span>
                     <div className="flex items-center gap-3">

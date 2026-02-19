@@ -92,7 +92,7 @@ export function DynamicFormPage() {
     setIsLoading(true)
     setError(null)
 
-    // Map frontend profile type to API value
+    // Map frontend profile type to API value (backend expects: salaried | student | gig | shopkeeper | rural)
     const profileMap: Record<string, string> = {
       "gig-worker": "gig",
       student: "student",
@@ -102,39 +102,48 @@ export function DynamicFormPage() {
     }
     const profile = profileMap[formData.profileType] ?? "salaried"
 
+    const num = (v: string, fallback = 0) => {
+      const n = parseFloat(v)
+      return Number.isFinite(n) ? n : fallback
+    }
+    const clamp = (value: number, min: number, max: number) =>
+      Math.max(min, Math.min(max, value))
+
     // Income stability (0–1) → income variance: variance = (1/stability) - 1
-    // Guard against zero or empty to avoid division by zero
-    const stability = parseFloat(formData.incomeStability) || 0.5
-    const income_variance = stability > 0 ? (1 / stability) - 1 : 99
+    const stability = clamp(num(formData.incomeStability, 0.5), 0.01, 1)
+    const income_variance = Math.max(0, (1 / stability) - 1)
 
-    // GPA: form uses Indian 10-point scale → normalise to 0–4
-    const gpaRaw = parseFloat(formData.gpa) || 0
-    const gpa = Math.min(gpaRaw / 10 * 4, 4)
+    // GPA: form uses Indian 10-point scale → normalise to 0–4 (backend: ge=0, le=4)
+    const gpa = clamp((num(formData.gpa) / 10) * 4, 0, 4)
+    // Attendance rate: form percentage → 0–1 (backend: ge=0, le=1)
+    const attendance_rate = clamp(num(formData.attendanceRate) / 100, 0, 1)
+    // Platform rating (backend: ge=0, le=5)
+    const platform_rating = clamp(num(formData.platformRating), 0, 5)
+    // Seasonality index (backend: ge=0, le=1)
+    const seasonality_index = clamp(num(formData.seasonalityIndex), 0, 1)
 
-    // Attendance rate: form uses percentage (e.g. 92) → 0–1
-    const attendance_rate = Math.min((parseFloat(formData.attendanceRate) || 0) / 100, 1)
-
+    // Build payload matching backend ScoreRequest exactly to avoid 422 validation errors
     const payload = {
       profile_type: profile,
-      monthly_income:  parseFloat(formData.monthlyIncome)  || 0,
+      monthly_income: Math.max(0, num(formData.monthlyIncome)),
       income_variance,
-      savings_balance: parseFloat(formData.savingsBalance) || 0,
-      months_active:   parseFloat(formData.monthsActive)   || 0,
-      // profile-specific
-      ...(profile === "student"    && { gpa, attendance_rate }),
-      ...(profile === "gig"        && {
-        platform_rating:  parseFloat(formData.platformRating)  || 0,
-        avg_weekly_hours: parseFloat(formData.avgWeeklyHours)  || 0,
-      }),
-      ...(profile === "shopkeeper" && {
-        business_years:    parseFloat(formData.businessYears)    || 0,
-        avg_daily_revenue: parseFloat(formData.avgDailyRevenue)  || 0,
-      }),
-      ...(profile === "rural"      && {
-        land_size_acres:   parseFloat(formData.landSize)          || 0,
-        subsidy_amount:    parseFloat(formData.subsidyAmount)     || 0,
-        seasonality_index: parseFloat(formData.seasonalityIndex) || 0,
-      }),
+      savings_balance: Math.max(0, num(formData.savingsBalance)),
+      months_active: Math.max(0, num(formData.monthsActive)),
+      total_credits: 0,
+      total_debits: 0,
+      total_transactions: 0,
+      avg_credit_amount: 0,
+      avg_debit_amount: 0,
+      recurring_ratio: 0,
+      gpa: profile === "student" ? gpa : undefined,
+      attendance_rate: profile === "student" ? attendance_rate : undefined,
+      platform_rating: profile === "gig" ? platform_rating : undefined,
+      avg_weekly_hours: profile === "gig" ? Math.max(0, num(formData.avgWeeklyHours)) : undefined,
+      business_years: profile === "shopkeeper" ? Math.max(0, num(formData.businessYears)) : undefined,
+      avg_daily_revenue: profile === "shopkeeper" ? Math.max(0, num(formData.avgDailyRevenue)) : undefined,
+      land_size_acres: profile === "rural" ? Math.max(0, num(formData.landSize)) : undefined,
+      subsidy_amount: profile === "rural" ? Math.max(0, num(formData.subsidyAmount)) : undefined,
+      seasonality_index: profile === "rural" ? seasonality_index : undefined,
     }
 
     try {

@@ -41,7 +41,7 @@ export function ProfileSelectionPage() {
   return (
     <main className="flex min-h-screen flex-col items-center justify-center px-4 pt-20">
       <div className="w-full max-w-2xl">
-        <div className="mb-10 text-center">
+        <div className="mb-10 text-center animate-fade-in">
           <h1 className="font-serif text-3xl font-bold text-foreground md:text-4xl">
             Select Your Profile Type
           </h1>
@@ -51,14 +51,14 @@ export function ProfileSelectionPage() {
         </div>
 
         <div className="grid gap-4 sm:grid-cols-2">
-          {profiles.map((profile) => (
+          {profiles.map((profile, index) => (
             <button
               key={profile.id}
               onClick={() => handleSelect(profile.id)}
-              className="group flex flex-col items-start rounded-2xl border border-border bg-card p-6 text-left transition-all hover:border-primary/30 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              className={`animate-slide-up group flex flex-col items-start rounded-2xl border border-border bg-card p-6 text-left transition-all duration-300 hover:-translate-y-1 hover:border-primary/30 hover:shadow-lg active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring stagger-${index + 1}`}
             >
-              <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 transition-colors group-hover:bg-primary/20">
-                <profile.icon className="h-6 w-6 text-primary" />
+              <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 transition-all duration-300 group-hover:bg-primary/20 group-hover:scale-110">
+                <profile.icon className="h-6 w-6 text-primary transition-transform duration-300 group-hover:-translate-y-0.5" />
               </div>
               <h3 className="text-lg font-semibold text-foreground">
                 {profile.title}

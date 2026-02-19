@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 
 export function Navbar() {
   const {
-    currentPage,
     setCurrentPage,
     isLoggedIn,
     setIsLoggedIn,
@@ -14,40 +13,55 @@ export function Navbar() {
   } = useAppState();
 
   return (
-    <header className="fixed top-4 left-1/2 z-50 w-full max-w-3xl -translate-x-1/2 px-4">
-      <nav className="flex items-center justify-center rounded-full border border-border bg-card/80 px-6 py-3 shadow-sm backdrop-blur-md">
+    <header className="fixed top-4 left-1/2 z-50 w-full max-w-6xl -translate-x-1/2 px-4 animate-slide-down">
+      <nav className="flex items-center justify-between rounded-full border border-border bg-card/80 px-12 py-6 shadow-sm backdrop-blur-md transition-shadow duration-300 hover:shadow-md">
         <button
+          type="button"
           onClick={() => setCurrentPage("landing")}
-          className="font-serif text-xl font-bold tracking-tight text-foreground"
+          className="font-serif text-3xl font-bold tracking-tight text-foreground transition-all duration-200 hover:scale-105 hover:text-primary"
         >
           CreditBridge
         </button>
 
-        {isLoggedIn && (
-          <div className="absolute right-4 flex items-center gap-3">
+        <div className="flex items-center gap-5">
+          {isLoggedIn ? (
+            <>
+              <Button
+                type="button"
+                variant="ghost"
+                size="lg"
+                className="text-lg transition-all duration-200 hover:scale-105"
+                onClick={() => setCurrentPage("dashboard")}
+              >
+                Dashboard
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                size="lg"
+                className="rounded-full text-lg transition-all duration-200 hover:scale-105 hover:bg-foreground hover:text-background"
+                onClick={() => {
+                  setIsLoggedIn(false);
+                  setCreditScore(null);
+                  setRiskBand(null);
+                  setCurrentPage("landing");
+                }}
+              >
+                Log out
+              </Button>
+            </>
+          ) : (
             <Button
-              variant="ghost"
-              size="sm"
-              className="text-sm"
-              onClick={() => setCurrentPage("dashboard")}
-            >
-              Dashboard
-            </Button>
-            <Button
+              type="button"
               variant="outline"
-              size="sm"
-              className="rounded-full"
-              onClick={() => {
-                setIsLoggedIn(false);
-                setCreditScore(null);
-                setRiskBand(null);
-                setCurrentPage("landing");
-              }}
+              size="lg"
+              className="rounded-full text-lg transition-all duration-200 hover:scale-105 hover:bg-foreground hover:text-background"
+              onClick={() => setCurrentPage("auth")}
             >
-              Log out
+              Log in
             </Button>
-          </div>
-        )}
+          )}
+        </div>
       </nav>
     </header>
   );
